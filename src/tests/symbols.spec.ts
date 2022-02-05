@@ -18,4 +18,10 @@ describe('Symbol functions test suite', () => {
     expect(generateSymbolFunc).toThrow(InvalidValueError);
     expect(generateSymbolFunc).toThrow('Value cannot be negative');
   });
+  
+  test('generateSymbol valid input, returns OK', () => {
+    let newSymbol = generateSymbol('X', 10);
+    expect(newSymbol.label).toEqual('X');
+    expect(newSymbol.value).toEqual(10);
+  });
 })
