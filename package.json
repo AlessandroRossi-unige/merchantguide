@@ -31,7 +31,7 @@
       "tsx",
       "ts"
     ],
-    "rootDir": "src/",
+    "rootDir": "src/tests/",
     "transform": {
       "^.+\\.(ts|tsx)?$": "ts-jest"
     }
