@@ -43,12 +43,12 @@ describe('Symbol parsing test suite', () => {
   let validSymbols: SymbolTable<Symbol> = {};
   beforeAll(() => {
     validSymbols['I'] = new Symbol('I', 1, 3);
-    validSymbols['V'] = new Symbol('V', 5, 1);
-    validSymbols['X'] = new Symbol('X', 10, 3);
-    validSymbols['L'] = new Symbol('L', 50, 1);
-    validSymbols['C'] = new Symbol('C', 100, 3);
-    validSymbols['D'] = new Symbol('D', 500, 1);
-    validSymbols['M'] = new Symbol('M', 1000, 3);
+    validSymbols['V'] = new Symbol('V', 5, 1, 'I');
+    validSymbols['X'] = new Symbol('X', 10, 3, 'I');
+    validSymbols['L'] = new Symbol('L', 50, 1, 'X');
+    validSymbols['C'] = new Symbol('C', 100, 3, 'X');
+    validSymbols['D'] = new Symbol('D', 500, 1, 'C');
+    validSymbols['M'] = new Symbol('M', 1000, 3, 'C');
   });
   
   test('inputParser empty array throws error', () => {
@@ -83,7 +83,6 @@ describe('Symbol parsing test suite', () => {
   
   test('inputParser reads input of length 3 repeated 3 times OK', () => {
     let result: Symbol[] = inputParser('XXX', validSymbols);
-    console.log(result);
     expect(result.length).toEqual(3);
     expect([result[0].label, result[1].label, result[2].label]).toEqual(['X', 'X', 'X']);
   });
@@ -96,12 +95,30 @@ describe('Symbol parsing test suite', () => {
     expect(inputParserFunc).toThrow(`Symbol 'X' at index 3 cannot be repeated 4 times`);
   });
   
-  test('inputParser reads input of length 4 repeated 4 times FAIL', () => {
+  test('inputParser reads input where subtraction is not allowed', () => {
     function inputParserFunc() {
       inputParser('VX', validSymbols);
     }
     expect(inputParserFunc).toThrow(InvalidSyntaxError);
     expect(inputParserFunc).toThrow(`Symbol 'V' cannot be subtracted from 'X'`);
+  });
+  
+  test('inputParser reads II, OK', () => {
+    let result: Symbol[] = inputParser('II', validSymbols);
+    expect(result.length).toEqual(2);
+    expect([result[0].label, result[1].label]).toEqual(['I', 'I']);
+  });
+  
+  test('inputParser reads IV, OK', () => {
+    let result: Symbol[] = inputParser('IV', validSymbols);
+    expect(result.length).toEqual(2);
+    expect([result[0].label, result[1].label]).toEqual(['I', 'V']);
+  });
+  
+  test('inputParser reads XXXIX, OK', () => {
+    let result: Symbol[] = inputParser('XXXIX', validSymbols);
+    expect(result.length).toEqual(5);
+    expect([result[0].label, result[1].label, result[2].label, result[3].label, result[4].label]).toEqual(['X', 'X', 'X', 'I', 'X']);
   });
   
 })
