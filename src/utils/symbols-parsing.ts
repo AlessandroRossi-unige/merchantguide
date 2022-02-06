@@ -32,11 +32,14 @@ export function getSymbolsFromFile(): Symbol[] {
   return symbolList;
 }
 
-export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symbol>) : string[] {
+export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symbol>) : Symbol[] {
+  let parsedInput: Symbol[] = [];
   if (valueToParse.length === 0) throw new EmptyValueError('ValueToParse cannot be empty');
   let letters = valueToParse.split('');
-  /*for (const letter of letters) {
-    if ()
-  }*/
-  return ['null'];
+  for (const letter of letters) {
+    let symbol = validSymbols[letter];
+    if (!symbol) throw new InvalidValueError(`Symbol: '${letter}' is not recognised`);
+    parsedInput.push(symbol);
+  }
+  return parsedInput;
 }

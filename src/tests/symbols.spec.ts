@@ -56,11 +56,19 @@ describe('Symbol parsing test suite', () => {
     }
     expect(inputParserFunc).toThrow(EmptyValueError);
     expect(inputParserFunc).toThrow('ValueToParse cannot be empty');
-  });test('inputParser input has non valid symbol', () => {
+  });
+  test('inputParser input has non valid symbol', () => {
     function inputParserFunc() {
       inputParser('Z', validSymbols);
     }
-    expect(inputParserFunc).toThrow(EmptyValueError);
-    expect(inputParserFunc).toThrow('ValueToParse cannot be empty');
+    expect(inputParserFunc).toThrow(InvalidValueError);
+    expect(inputParserFunc).toThrow('Symbol: \'Z\' is not recognised');
+  });
+  
+  test('inputParser reads input of length 1 OK', () => {
+    let result: Symbol[] = inputParser('I', validSymbols);
+    expect(result.length).toEqual(1);
+    expect(result[0].label).toEqual('I');
+    expect(result[0].value).toEqual(1);
   });
 })
