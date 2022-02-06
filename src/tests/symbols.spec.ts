@@ -71,4 +71,13 @@ describe('Symbol parsing test suite', () => {
     expect(result[0].label).toEqual('I');
     expect(result[0].value).toEqual(1);
   });
+  
+  test('inputParser symbol cannot be repeated', () => {
+    function inputParserFunc() {
+      inputParser('VV', validSymbols);
+    }
+    expect(inputParserFunc).toThrow(InvalidValueError);
+    expect(inputParserFunc).toThrow(`Syntax error: 'V' cannot be repeated`);
+  });
+  
 })
