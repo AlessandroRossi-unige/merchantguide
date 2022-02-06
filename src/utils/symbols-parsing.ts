@@ -80,3 +80,7 @@ export function calculateAmountFromSymbols(input: Symbol[]): number {
   }
   return result;
 }
+
+export function calculateAmount(input: string, validSymbols: SymbolTable<Symbol>): number {
+  return calculateAmountFromSymbols(inputParser(input, validSymbols));
+}

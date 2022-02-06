@@ -1,9 +1,24 @@
-import {calculateAmountFromSymbols, generateSymbol, getSymbolsFromFile, inputParser} from "../utils/symbols-parsing";
+import {
+  calculateAmount,
+  calculateAmountFromSymbols,
+  generateSymbol,
+  getSymbolsFromFile,
+  inputParser
+} from "../utils/symbols-parsing";
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 import {InvalidValueError} from "../ErrorHandling/InvalidValueError";
 import {Symbol} from "../entities/Symbol"
 import {SymbolTable} from "../interfaces/SymbolTable";
 import {InvalidSyntaxError} from "../ErrorHandling/InvalidSyntaxError";
+
+let validSymbols: SymbolTable<Symbol> = {};
+validSymbols['I'] = new Symbol('I', 1, 3);
+validSymbols['V'] = new Symbol('V', 5, 1, 'I');
+validSymbols['X'] = new Symbol('X', 10, 3, 'I');
+validSymbols['L'] = new Symbol('L', 50, 1, 'X');
+validSymbols['C'] = new Symbol('C', 100, 3, 'X');
+validSymbols['D'] = new Symbol('D', 500, 1, 'C');
+validSymbols['M'] = new Symbol('M', 1000, 3, 'C');
 
 describe('Symbol functions test suite', () => {
   test('generateSymbol empty label', () => {
@@ -40,16 +55,6 @@ describe('Symbol functions test suite', () => {
 });
 
 describe('Symbol parsing test suite', () => {
-  let validSymbols: SymbolTable<Symbol> = {};
-  beforeAll(() => {
-    validSymbols['I'] = new Symbol('I', 1, 3);
-    validSymbols['V'] = new Symbol('V', 5, 1, 'I');
-    validSymbols['X'] = new Symbol('X', 10, 3, 'I');
-    validSymbols['L'] = new Symbol('L', 50, 1, 'X');
-    validSymbols['C'] = new Symbol('C', 100, 3, 'X');
-    validSymbols['D'] = new Symbol('D', 500, 1, 'C');
-    validSymbols['M'] = new Symbol('M', 1000, 3, 'C');
-  });
   
   test('inputParser empty array throws error', () => {
     function inputParserFunc() {
@@ -163,5 +168,47 @@ describe('Calculation functions test suite', () => {
   test('calculateAmountFromSymbols input XIX', () => {
     let testInput = [new Symbol('X', 10, 3), new Symbol('I', 1, 3), new Symbol('X', 10, 3)];
     expect(calculateAmountFromSymbols(testInput)).toEqual(19);
+  });
+});
+
+describe('Full calculations test suite', () => {
+  test('Calculate empty input', () => {
+    function calculateAmountFunc() {
+      calculateAmount('', validSymbols);
+    }
+    expect(calculateAmountFunc).toThrow(EmptyValueError);
+    expect(calculateAmountFunc).toThrow(`ValueToParse cannot be empty`);
+  });
+  
+  test('Calculate unrecognised input MCF', () => {
+    function calculateAmountFunc() {
+      calculateAmount('MCF', validSymbols);
+    }
+    expect(calculateAmountFunc).toThrow(InvalidValueError);
+    expect(calculateAmountFunc).toThrow(`Symbol: 'F' at index 2 is not recognised`);
+  });
+  
+  test('Calculate too many repetitions inputs IIII', () => {
+    function calculateAmountFunc() {
+      calculateAmount('IIII', validSymbols);
+    }
+    expect(calculateAmountFunc).toThrow(InvalidSyntaxError);
+    expect(calculateAmountFunc).toThrow(`Symbol 'I' at index 3 cannot be repeated 4 times`);
+  });
+  
+  test('Calculate too many repetitions inputs IIII', () => {
+    function calculateAmountFunc() {
+      calculateAmount('IIII', validSymbols);
+    }
+    expect(calculateAmountFunc).toThrow(InvalidSyntaxError);
+    expect(calculateAmountFunc).toThrow(`Symbol 'I' at index 3 cannot be repeated 4 times`);
+  });
+  
+  test('Calculate XXX', () => {
+    expect(calculateAmount('XXX', validSymbols)).toEqual(30);
+  });
+  
+  test('Calculate XIV', () => {
+    expect(calculateAmount('XXX', validSymbols)).toEqual(30);
   });
 })
