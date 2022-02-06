@@ -78,7 +78,30 @@ describe('Symbol parsing test suite', () => {
       inputParser('VV', validSymbols);
     }
     expect(inputParserFunc).toThrow(InvalidSyntaxError);
-    expect(inputParserFunc).toThrow(`symbol 'V' at index 1 cannot be repeated 2 times`);
+    expect(inputParserFunc).toThrow(`Symbol 'V' at index 1 cannot be repeated 2 times`);
+  });
+  
+  test('inputParser reads input of length 3 repeated 3 times OK', () => {
+    let result: Symbol[] = inputParser('XXX', validSymbols);
+    console.log(result);
+    expect(result.length).toEqual(3);
+    expect([result[0].label, result[1].label, result[2].label]).toEqual(['X', 'X', 'X']);
+  });
+  
+  test('inputParser reads input of length 4 repeated 4 times FAIL', () => {
+    function inputParserFunc() {
+      inputParser('XXXX', validSymbols);
+    }
+    expect(inputParserFunc).toThrow(InvalidSyntaxError);
+    expect(inputParserFunc).toThrow(`Symbol 'X' at index 3 cannot be repeated 4 times`);
+  });
+  
+  test('inputParser reads input of length 4 repeated 4 times FAIL', () => {
+    function inputParserFunc() {
+      inputParser('VX', validSymbols);
+    }
+    expect(inputParserFunc).toThrow(InvalidSyntaxError);
+    expect(inputParserFunc).toThrow(`Symbol 'V' cannot be subtracted from 'X'`);
   });
   
 })
