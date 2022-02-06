@@ -121,10 +121,20 @@ describe('Symbol parsing test suite', () => {
     expect([result[0].label, result[1].label, result[2].label, result[3].label, result[4].label]).toEqual(['X', 'X', 'X', 'I', 'X']);
   });
   
-  test('inputParser reads IIV, OK', () => {
-    let result: Symbol[] = inputParser('IIV', validSymbols);
-    expect(result.length).toEqual(3);
-    expect([result[0].label, result[1].label, result[2].label]).toEqual(['I', 'I', 'V']);
+  test('inputParser reads input where subtraction is not allowed', () => {
+    function inputParserFunc() {
+      inputParser('VX', validSymbols);
+    }
+    expect(inputParserFunc).toThrow(InvalidSyntaxError);
+    expect(inputParserFunc).toThrow(`Symbol 'V' cannot be subtracted from 'X'`);
+  });
+  
+  test('inputParser reads IIV and throws error', () => {
+    function inputParserFunc() {
+      inputParser('IIV', validSymbols);
+    }
+    expect(inputParserFunc).toThrow(InvalidSyntaxError);
+    expect(inputParserFunc).toThrow(`Symbol 'I' at index 0 cannot subtract twice`);
   });
   
 })
@@ -143,5 +153,15 @@ describe('Calculation functions test suite', () => {
   test('calculateAmountFromSymbols input IV', () => {
     let testInput = [new Symbol('I', 1, 3), new Symbol('V', 5, 1)];
     expect(calculateAmountFromSymbols(testInput)).toEqual(4);
+  });
+  
+  test('calculateAmountFromSymbols input XIV', () => {
+    let testInput = [new Symbol('X', 10, 3), new Symbol('I', 1, 3), new Symbol('V', 5, 1)];
+    expect(calculateAmountFromSymbols(testInput)).toEqual(14);
+  });
+  
+  test('calculateAmountFromSymbols input XIX', () => {
+    let testInput = [new Symbol('X', 10, 3), new Symbol('I', 1, 3), new Symbol('X', 10, 3)];
+    expect(calculateAmountFromSymbols(testInput)).toEqual(19);
   });
 })

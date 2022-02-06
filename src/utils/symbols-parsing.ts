@@ -48,8 +48,10 @@ export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symb
     let symbol = validSymbols[letters[i]];
     
     if (!symbol) throw new InvalidValueError(`Symbol: '${letters[i]}' at index ${i} is not recognised`);
+    if (i-2 >= 0 && symbol.value > parsedInput[i-1].value && symbol.value > parsedInput[i-2].value) throw new InvalidSyntaxError(`Symbol '${parsedInput[i-2].label}' at index ${i-2} cannot subtract twice`);
+    
     if (i-1 >= 0 && parsedInput[i-1].label === symbol.label){
-    numberOfRepetitions++;
+      numberOfRepetitions++;
     } else {
       numberOfRepetitions = 1;
     }
@@ -66,7 +68,15 @@ export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symb
 export function calculateAmountFromSymbols(input: Symbol[]): number {
   let result = 0;
   for (let i = 0; i < input.length; i++) {
-    result += input[i].value;
+    let current = input[i];
+    let next = i+1 < input.length ? input[i+1] : null;
+    if (next !== null && next.value > current.value) {
+      result += next.value - current.value;
+      i++;
+    } else {
+      result += input[i].value;
+    }
+    
   }
   return result;
 }
