@@ -1,4 +1,4 @@
-import {generateSymbol} from "../utils/symbols";
+import {generateSymbol, getSymbolsFromFile} from "../utils/symbols-parsing";
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 import {InvalidValueError} from "../ErrorHandling/InvalidValueError";
 
@@ -23,5 +23,15 @@ describe('Symbol functions test suite', () => {
     let newSymbol = generateSymbol('X', 10);
     expect(newSymbol.label).toEqual('X');
     expect(newSymbol.value).toEqual(10);
+  });
+  
+  test('generateSymbol valid input, returns OK', () => {
+    let newSymbol = generateSymbol('X', 10);
+    expect(newSymbol.label).toEqual('X');
+    expect(newSymbol.value).toEqual(10);
+  });
+  
+  test('getValuesFromFile reads and generates 7 symbols', () => {
+    expect(getSymbolsFromFile().length).toEqual(7);
   });
 })
