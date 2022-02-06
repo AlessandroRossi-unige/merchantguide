@@ -1,4 +1,4 @@
-import {generateSymbol, getSymbolsFromFile} from "../utils/symbols-parsing";
+import {generateSymbol, getSymbolsFromFile, inputParser} from "../utils/symbols-parsing";
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 import {InvalidValueError} from "../ErrorHandling/InvalidValueError";
 
@@ -33,5 +33,13 @@ describe('Symbol functions test suite', () => {
   
   test('getValuesFromFile reads and generates 7 symbols', () => {
     expect(getSymbolsFromFile().length).toEqual(7);
+  });
+  
+  test('inputParser empty array throws error', () => {
+    function inputParserFunc() {
+      inputParser('');
+    }
+    expect(inputParserFunc).toThrow(EmptyValueError);
+    expect(inputParserFunc).toThrow('ValueToParse cannot be empty');
   });
 })

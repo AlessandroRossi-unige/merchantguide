@@ -30,3 +30,8 @@ export function getSymbolsFromFile(): Symbol[] {
   console.log(symbolList);
   return symbolList;
 }
+
+export function inputParser(valueToParse: string) : string[] {
+  if (valueToParse.length === 0) throw new EmptyValueError('ValueToParse cannot be empty');
+  return ['null'];
+}
