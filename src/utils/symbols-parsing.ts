@@ -64,5 +64,9 @@ export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symb
 }
 
 export function calculateAmountFromSymbols(input: Symbol[]): number {
-  return 0;
+  let result = 0;
+  for (let i = 0; i < input.length; i++) {
+    result += input[i].value;
+  }
+  return result;
 }

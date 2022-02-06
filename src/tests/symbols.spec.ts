@@ -130,8 +130,18 @@ describe('Symbol parsing test suite', () => {
 })
 
 describe('Calculation functions test suite', () => {
-  test('calculateAmountFromSymbols', () => {
+  test('calculateAmountFromSymbols input II', () => {
     let testInput = [new Symbol('I', 1, 3), new Symbol('I', 1, 3)];
     expect(calculateAmountFromSymbols(testInput)).toEqual(2);
+  });
+  
+  test('calculateAmountFromSymbols input VI', () => {
+    let testInput = [new Symbol('V', 5, 1, 'I'), new Symbol('I', 1, 3)];
+    expect(calculateAmountFromSymbols(testInput)).toEqual(6);
+  });
+  
+  test('calculateAmountFromSymbols input IV', () => {
+    let testInput = [new Symbol('I', 1, 3), new Symbol('V', 5, 1)];
+    expect(calculateAmountFromSymbols(testInput)).toEqual(4);
   });
 })
