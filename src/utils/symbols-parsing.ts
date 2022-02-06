@@ -2,6 +2,7 @@ import { Symbol } from "../entities/Symbol"
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 import { InvalidValueError } from "../ErrorHandling/InvalidValueError";
 import * as fs from "fs"
+import {SymbolTable} from "../interfaces/SymbolTable";
 
 export function generateSymbol(label: string, value: number) : Symbol {
   if (label.length === 0) {
@@ -31,7 +32,11 @@ export function getSymbolsFromFile(): Symbol[] {
   return symbolList;
 }
 
-export function inputParser(valueToParse: string) : string[] {
+export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symbol>) : string[] {
   if (valueToParse.length === 0) throw new EmptyValueError('ValueToParse cannot be empty');
+  let letters = valueToParse.split('');
+  /*for (const letter of letters) {
+    if ()
+  }*/
   return ['null'];
 }

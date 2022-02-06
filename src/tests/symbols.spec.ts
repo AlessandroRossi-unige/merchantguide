@@ -2,6 +2,7 @@ import {generateSymbol, getSymbolsFromFile, inputParser} from "../utils/symbols-
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 import {InvalidValueError} from "../ErrorHandling/InvalidValueError";
 import {Symbol} from "../entities/Symbol"
+import {SymbolTable} from "../interfaces/SymbolTable";
 
 describe('Symbol functions test suite', () => {
   test('generateSymbol empty label', () => {
@@ -38,15 +39,15 @@ describe('Symbol functions test suite', () => {
 });
 
 describe('Symbol parsing test suite', () => {
-  let validSymbols: Symbol[] = [];
+  let validSymbols: SymbolTable<Symbol> = {};
   beforeAll(() => {
-    validSymbols.push(new Symbol('I', 1));
-    validSymbols.push(new Symbol('V', 5));
-    validSymbols.push(new Symbol('L', 50));
-    validSymbols.push(new Symbol('X', 10));
-    validSymbols.push(new Symbol('C', 100));
-    validSymbols.push(new Symbol('D', 500));
-    validSymbols.push(new Symbol('M', 1000));
+    validSymbols['I'] = new Symbol('I', 1);
+    validSymbols['V'] = new Symbol('V', 5);
+    validSymbols['L'] = new Symbol('L', 50);
+    validSymbols['X'] = new Symbol('X', 10);
+    validSymbols['C'] = new Symbol('C', 100);
+    validSymbols['D'] = new Symbol('D', 500);
+    validSymbols['M'] = new Symbol('M', 1000);
   });
   
   test('inputParser empty array throws error', () => {
