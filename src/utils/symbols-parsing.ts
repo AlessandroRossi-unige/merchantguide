@@ -43,14 +43,26 @@ export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symb
   if (valueToParse.length === 0) throw new EmptyValueError('ValueToParse cannot be empty');
   let letters = valueToParse.split('');
   let numberOfRepetitions = 1;
+  
   for (let i=0; i <letters.length; i++) {
     let symbol = validSymbols[letters[i]];
+    
     if (!symbol) throw new InvalidValueError(`Symbol: '${letters[i]}' at index ${i} is not recognised`);
-    if (i-1 >= 0 && parsedInput[i-1].label === symbol.label) numberOfRepetitions++;
+    if (i-1 >= 0 && parsedInput[i-1].label === symbol.label){
+    numberOfRepetitions++;
+    } else {
+      numberOfRepetitions = 1;
+    }
     if (numberOfRepetitions > symbol.maxNumberOfRepetitions) throw new InvalidSyntaxError(`Symbol '${symbol.label}' at index ${i} cannot be repeated ${numberOfRepetitions} times`);
     if (i-1 >=0 && symbol.subtractedAllowed !== undefined && parsedInput[i-1].value < symbol.value
       && parsedInput[i-1].label !== symbol.subtractedAllowed) throw new InvalidSyntaxError(`Symbol '${parsedInput[i-1].label}' cannot be subtracted from '${symbol.label}'`);
+    /*if (i-1 >=0  && i-2 >=0 && symbol.value)*/
     parsedInput.push(symbol);
   }
+  
   return parsedInput;
+}
+
+export function calculateAmountFromSymbols(input: Symbol[]): number {
+  return 0;
 }
