@@ -86,6 +86,15 @@ describe('InputFromFile test suite', () => {
     expect(generateSymbolFunc).toThrow(`Line 1, no label for element`);
   });
   
+  test('No values for element , throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noValue.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
+    expect(generateSymbolFunc).toThrow(`Line 1, no amount for element 'Zinc'`);
+  });
+  
   test('Line , throws error', () => {
     let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noValue.txt';
     function generateSymbolFunc() {
@@ -93,5 +102,32 @@ describe('InputFromFile test suite', () => {
     }
     expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
     expect(generateSymbolFunc).toThrow(`Line 1, no amount for element 'Zinc'`);
+  });
+  
+  test('Question ends with ? but doesnt begin with how, throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noHow.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
+    expect(generateSymbolFunc).toThrow(`Line 1, questions must begin with 'how'`);
+  });
+  
+  test('Question ends and starts properly but invalid second elem, throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\invalidQuestion.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
+    expect(generateSymbolFunc).toThrow(`Line 1, unrecognisable question`);
+  });
+  
+  test('Unrecognised input, throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\unrecognised.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(UnknownValueError);
+    expect(generateSymbolFunc).toThrow(`Line 1 is unrecognised`);
   });
 })

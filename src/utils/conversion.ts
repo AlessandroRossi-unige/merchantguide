@@ -58,7 +58,7 @@ export function inputFromFile(path: string): Notes {
     if (lines[i].length === 0) throw new EmptyValueError(`File ${path} is empty`);
     let words = lines[i].split(' ');
     if (words.length < 3) throw new InvalidSyntaxError(`Line ${i+1}, input not long enough to be valid`);
-    if (words[1] === 'is') {
+    if (words[1] === 'is' && words.length === 3) {
       alienSymbolsMap.set(words[0], words[2]);
     } else if (words[words.length-1] === GALACTIC_CURRENCY) {
       words.pop(); // remove 'Credits'
@@ -67,12 +67,23 @@ export function inputFromFile(path: string): Notes {
       words.pop(); // remove 'is'
       let element = words.pop(); // get element name
       if (!element) throw new InvalidSyntaxError(`Line ${i+1}, no label for element`);
-      if (words) {
+      if (words && words.length > 0) {
         infoElemMap.set(element, words)
       } else {
         throw new InvalidSyntaxError(`Line ${i+1}, no amount for element '${element}'`)
       }
       
+    } else if (words[words.length-1] === '?') {
+      if (words[0] !== 'how') throw new InvalidSyntaxError(`Line ${i+1}, questions must begin with 'how'`);
+      if (words [1] === 'much') {
+        console.log('much');
+      } else if (words[1] === 'many') {
+        console.log('many')
+      } else {
+        throw new InvalidSyntaxError(`Line ${i+1}, unrecognisable question`);
+      }
+    } else {
+      throw new UnknownValueError(`Line ${i+1} is unrecognised`);
     }
     
   }
