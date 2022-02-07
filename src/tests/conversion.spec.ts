@@ -1,6 +1,7 @@
-import {produceOutputFromNotes} from "../utils/conversion";
+import {inputFromFile, produceOutputFromNotes} from "../utils/conversion";
 import {Notes} from "../entities/Notes";
 import {UnknownValueError} from "../ErrorHandling/UnknownValueError";
+import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 
 describe('Fetching input test suite', () => {
   test('Input is one translation of 3', () => {
@@ -43,6 +44,13 @@ describe('Fetching input test suite', () => {
     expect(generateSymbolFunc).toThrow(`I don't have information on this: 'Zinc'`);
   });
   
- 
+  test('Input from empty file, throws error)', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\empty.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(EmptyValueError);
+    expect(generateSymbolFunc).toThrow(`File ${path} is empty`);
+  });
   
 })
