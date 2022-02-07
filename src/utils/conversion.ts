@@ -70,7 +70,7 @@ export function inputFromFile(path: string): Notes {
       if (words) {
         infoElemMap.set(element, words)
       } else {
-        throw new InvalidSyntaxError(`Line ${i+1}, no amount for element ${element}`)
+        throw new InvalidSyntaxError(`Line ${i+1}, no amount for element '${element}'`)
       }
       
     }

@@ -2,6 +2,8 @@ import {inputFromFile, produceOutputFromNotes} from "../utils/conversion";
 import {Notes} from "../entities/Notes";
 import {UnknownValueError} from "../ErrorHandling/UnknownValueError";
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
+import {InvalidSyntaxError} from "../ErrorHandling/InvalidSyntaxError";
+import {InvalidValueError} from "../ErrorHandling/InvalidValueError";
 
 describe('Fetching input test suite', () => {
   test('Input is one translation of 3', () => {
@@ -44,7 +46,11 @@ describe('Fetching input test suite', () => {
     expect(generateSymbolFunc).toThrow(`I don't have information on this: 'Zinc'`);
   });
   
-  test('Input from empty file, throws error)', () => {
+  
+})
+
+describe('InputFromFile test suite', () => {
+  test('Input from empty file, throws error EmptyValueError', () => {
     let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\empty.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
@@ -53,4 +59,39 @@ describe('Fetching input test suite', () => {
     expect(generateSymbolFunc).toThrow(`File ${path} is empty`);
   });
   
+  test('Too few words, throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\fewWords.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
+    expect(generateSymbolFunc).toThrow(`Line 1, input not long enough to be valid`);
+  });
+  
+  test('Not valid amount of credits, throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\invalidCreditsAmount.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidValueError);
+    expect(generateSymbolFunc).toThrow(`Line 1, not a valid amount of credits`);
+  });
+  
+  test('No label for element, throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noLabel.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
+    expect(generateSymbolFunc).toThrow(`Line 1, no label for element`);
+  });
+  
+  test('Line , throws error', () => {
+    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noValue.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
+    expect(generateSymbolFunc).toThrow(`Line 1, no amount for element 'Zinc'`);
+  });
 })
