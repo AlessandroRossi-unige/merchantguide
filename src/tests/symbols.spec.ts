@@ -2,7 +2,7 @@ import {
   calculateAmount,
   calculateAmountFromSymbols,
   generateSymbol,
-  getSymbolsFromFile,
+  /*getSymbolsFromFile,*/
   inputParser
 } from "../utils/symbols-parsing";
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
@@ -49,9 +49,9 @@ describe('Symbol functions test suite', () => {
     expect(newSymbol.value).toEqual(10);
   });
   
-  test('getValuesFromFile reads and generates 7 symbols', () => {
+  /*test('getValuesFromFile reads and generates 7 symbols', () => {
     expect(getSymbolsFromFile().length).toEqual(7);
-  });
+  });*/
 });
 
 describe('Symbol parsing test suite', () => {

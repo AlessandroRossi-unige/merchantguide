@@ -15,8 +15,8 @@ export function generateSymbol(label: string, value: number, maxNumberOfRepetiti
   return new Symbol(label, value, maxNumberOfRepetitions, subtractedAllowedList);
 }
 
-export function getSymbolsFromFile(): Symbol[] {
-  let symbolList: Symbol[] = [];
+export function getSymbolsFromFile(): SymbolTable<Symbol> {
+  let symbolTable: SymbolTable<Symbol> = {};
   try {
   
     let lines: string[] = fs.readFileSync('D:\\nodejs\\merchantguide\\src\\utils\\symbolTable.txt').toString().split("\n");
@@ -25,9 +25,9 @@ export function getSymbolsFromFile(): Symbol[] {
       
       let elems = line.trim().split(' ');
       if (elems.length > 3) {
-        symbolList.push(generateSymbol(elems[0], +elems[1], +elems[2], elems[3]))
+        symbolTable[elems[0]] = generateSymbol(elems[0], +elems[1], +elems[2], elems[3]);
       } else {
-        symbolList.push(generateSymbol(elems[0], +elems[1], +elems[2]));
+        symbolTable[elems[0]] = generateSymbol(elems[0], +elems[1], +elems[2]);
       }
       
     }
@@ -35,7 +35,7 @@ export function getSymbolsFromFile(): Symbol[] {
   } catch (e) {
     console.log(e);
   }
-  return symbolList;
+  return symbolTable;
 }
 
 export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symbol>) : Symbol[] {
