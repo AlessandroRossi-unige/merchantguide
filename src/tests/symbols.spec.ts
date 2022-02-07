@@ -188,7 +188,7 @@ describe('Full calculations test suite', () => {
     expect(calculateAmountFunc).toThrow(`Symbol: 'F' at index 2 is not recognised`);
   });
   
-  test('Calculate too many repetitions inputs IIII', () => {
+  test('Calculate too many repetitions input IIII', () => {
     function calculateAmountFunc() {
       calculateAmount('IIII', validSymbols);
     }
@@ -196,12 +196,20 @@ describe('Full calculations test suite', () => {
     expect(calculateAmountFunc).toThrow(`Symbol 'I' at index 3 cannot be repeated 4 times`);
   });
   
-  test('Calculate too many repetitions inputs IIII', () => {
+  test('Calculate not subtractable input VX', () => {
     function calculateAmountFunc() {
-      calculateAmount('IIII', validSymbols);
+      calculateAmount('VX', validSymbols);
     }
     expect(calculateAmountFunc).toThrow(InvalidSyntaxError);
-    expect(calculateAmountFunc).toThrow(`Symbol 'I' at index 3 cannot be repeated 4 times`);
+    expect(calculateAmountFunc).toThrow(`Symbol 'V' cannot be subtracted from 'X'`);
+  });
+  
+  test('Calculate many subtractions input IIX', () => {
+    function calculateAmountFunc() {
+      calculateAmount('IIX', validSymbols);
+    }
+    expect(calculateAmountFunc).toThrow(InvalidSyntaxError);
+    expect(calculateAmountFunc).toThrow(`Symbol 'I' at index 0 cannot subtract twice`);
   });
   
   test('Calculate XXX', () => {
@@ -210,5 +218,17 @@ describe('Full calculations test suite', () => {
   
   test('Calculate XIV', () => {
     expect(calculateAmount('XXX', validSymbols)).toEqual(30);
+  });
+  
+  test('Calculate XIV', () => {
+    expect(calculateAmount('XXX', validSymbols)).toEqual(30);
+  });
+  
+  test('Calculate MMVI', () => {
+    expect(calculateAmount('MMVI', validSymbols)).toEqual(2006);
+  });
+  
+  test('Calculate MCMXLIV', () => {
+    expect(calculateAmount('MCMXLIV', validSymbols)).toEqual(1944);
   });
 })
