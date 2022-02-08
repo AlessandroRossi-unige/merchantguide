@@ -49,10 +49,11 @@ export function produceOutputFromNotes(notes: Notes): Output {
 }
 
 export function inputFromFile(path: string): Notes {
-  let lines: string[] = fs.readFileSync(path).toString().split("\n");
+  let lines: string[] = fs.readFileSync(path).toString().split("\r\n");
   let alienSymbolsMap = new Map<string, string>();
-  let translationList: string[][] = [[]];
+  let translationList: Array<string[]> = [];
   let infoElemMap =  new Map<string, string[]>();
+  let conversionMap: Array<[string, string[]]> = [];
   
   for (let i = 0; i <lines.length; i++) {
     if (lines[i].length === 0) throw new EmptyValueError(`File ${path} is empty`);
@@ -68,6 +69,7 @@ export function inputFromFile(path: string): Notes {
       let element = words.pop(); // get element name
       if (!element) throw new InvalidSyntaxError(`Line ${i+1}, no label for element`);
       if (words && words.length > 0) {
+        words.push(num.toString());
         infoElemMap.set(element, words)
       } else {
         throw new InvalidSyntaxError(`Line ${i+1}, no amount for element '${element}'`)
@@ -76,9 +78,15 @@ export function inputFromFile(path: string): Notes {
     } else if (words[words.length-1] === '?') {
       if (words[0] !== 'how') throw new InvalidSyntaxError(`Line ${i+1}, questions must begin with 'how'`);
       if (words [1] === 'much') {
-        console.log('much');
+        if (words.length < 5) throw new EmptyValueError(`Line ${i+1}, question has no value to answer`);
+        words.pop(); // remove ?
+        translationList.push(words.slice(3));
       } else if (words[1] === 'many') {
-        console.log('many')
+        if (words.length < 7) throw new EmptyValueError(`Line ${i+1}, question has no value to answer`);
+        words.pop(); // remove ?
+        let label = words.pop()!;
+        let input = words.slice(4);
+        conversionMap.push([label, input]);
       } else {
         throw new InvalidSyntaxError(`Line ${i+1}, unrecognisable question`);
       }
@@ -87,5 +95,21 @@ export function inputFromFile(path: string): Notes {
     }
     
   }
-  return new Notes(alienSymbolsMap, infoElemMap, translationList, [(['Silver', ['vnvc', 'dxzc','dxzc', 'dxzc']])]);
+  return new Notes(alienSymbolsMap, infoElemMap, translationList, conversionMap);
+}
+
+export function produceOutputIntoFile(inputPath: string, outputPath: string) {
+  let output = produceOutputFromNotes(inputFromFile(inputPath));
+  let outputFile = fs.createWriteStream(outputPath, {
+    flags: 'w' // 'a' means appending (old data will be preserved)
+  });
+  
+  for (const outputElement of output.translationList) {
+    outputFile.write(outputElement[0].join(' ') + ' is ' + outputElement[1]+ '\r\n');  // translations
+  }
+  
+  for (const outputElement of output.conversionMap) {
+    outputFile.write(outputElement[1].join(' ') + ' ' + outputElement[0] + ' is ' + outputElement[2] + '\r\n'); // conversions
+  }
+  outputFile.close();
 }

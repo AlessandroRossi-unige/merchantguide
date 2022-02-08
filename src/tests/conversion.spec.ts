@@ -1,9 +1,10 @@
-import {inputFromFile, produceOutputFromNotes} from "../utils/conversion";
+import {inputFromFile, produceOutputFromNotes, produceOutputIntoFile} from "../utils/conversion";
 import {Notes} from "../entities/Notes";
 import {UnknownValueError} from "../ErrorHandling/UnknownValueError";
 import {EmptyValueError} from "../ErrorHandling/EmptyValueError";
 import {InvalidSyntaxError} from "../ErrorHandling/InvalidSyntaxError";
 import {InvalidValueError} from "../ErrorHandling/InvalidValueError";
+import fs from "fs";
 
 describe('Fetching input test suite', () => {
   test('Input is one translation of 3', () => {
@@ -51,7 +52,7 @@ describe('Fetching input test suite', () => {
 
 describe('InputFromFile test suite', () => {
   test('Input from empty file, throws error EmptyValueError', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\empty.txt';
+    let path = 'src/tests/testfiles/empty.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -60,7 +61,7 @@ describe('InputFromFile test suite', () => {
   });
   
   test('Too few words, throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\fewWords.txt';
+    let path = 'src/tests/testfiles/fewWords.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -69,7 +70,7 @@ describe('InputFromFile test suite', () => {
   });
   
   test('Not valid amount of credits, throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\invalidCreditsAmount.txt';
+    let path = 'src/tests/testfiles/invalidCreditsAmount.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -78,7 +79,7 @@ describe('InputFromFile test suite', () => {
   });
   
   test('No label for element, throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noLabel.txt';
+    let path = 'src/tests/testfiles/noLabel.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -87,16 +88,7 @@ describe('InputFromFile test suite', () => {
   });
   
   test('No values for element , throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noValue.txt';
-    function generateSymbolFunc() {
-      inputFromFile(path);
-    }
-    expect(generateSymbolFunc).toThrow(InvalidSyntaxError);
-    expect(generateSymbolFunc).toThrow(`Line 1, no amount for element 'Zinc'`);
-  });
-  
-  test('Line , throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noValue.txt';
+    let path = 'src/tests/testfiles/noValue.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -105,7 +97,7 @@ describe('InputFromFile test suite', () => {
   });
   
   test('Question ends with ? but doesnt begin with how, throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\noHow.txt';
+    let path = 'src/tests/testfiles/noHow.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -114,7 +106,7 @@ describe('InputFromFile test suite', () => {
   });
   
   test('Question ends and starts properly but invalid second elem, throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\invalidQuestion.txt';
+    let path = 'src/tests/testfiles/invalidQuestion.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
@@ -123,11 +115,49 @@ describe('InputFromFile test suite', () => {
   });
   
   test('Unrecognised input, throws error', () => {
-    let path = 'D:\\nodejs\\merchantguide\\src\\tests\\testfiles\\unrecognised.txt';
+    let path = 'src/tests/testfiles/unrecognised.txt';
     function generateSymbolFunc() {
       inputFromFile(path);
     }
     expect(generateSymbolFunc).toThrow(UnknownValueError);
     expect(generateSymbolFunc).toThrow(`Line 1 is unrecognised`);
   });
+  
+  test('Empty question (much), throws error', () => {
+    let path = 'src/tests/testfiles/howMuchNoValue.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(EmptyValueError);
+    expect(generateSymbolFunc).toThrow(`Line 1, question has no value to answer`);
+  });
+  
+  test('Empty question (many), throws error', () => {
+    let path = 'src/tests/testfiles/howManyNoValue.txt';
+    function generateSymbolFunc() {
+      inputFromFile(path);
+    }
+    expect(generateSymbolFunc).toThrow(EmptyValueError);
+    expect(generateSymbolFunc).toThrow(`Line 1, question has no value to answer`);
+  });
+  
+  test('Input is valid and returns working map', () => {
+    let path = 'src/tests/testfiles/validInput.txt';
+    let notes: Notes;
+    notes = new Notes(new Map<string, string>([['glob', 'I']]),
+      new Map<string, string[]>([['Silver', ['glob', 'glob', '34']]]),
+      [['pish', 'tegj', 'glob', 'glob']], [(['Silver', ['glob', 'prok']])]);
+    
+    expect(inputFromFile(path)).toEqual(notes);
+  });
+})
+
+describe('produceOutput test suite', () => {
+  test('valid', () => {
+    let ipath = 'src/tests/testfiles/fullValidInput.txt';
+
+    produceOutputIntoFile(ipath, 'src/tests/testOutput/pippo.txt');
+    let output: string = fs.readFileSync('src/tests/testOutput/pippo.txt').toString();
+    expect(output).toEqual('pish tegj glob glob is 42\r\nglob prok Silver is 68 Credits\r\nglob prok Gold is 57800 Credits\r\nglob prok Iron is 782 Credits');
+  })
 })

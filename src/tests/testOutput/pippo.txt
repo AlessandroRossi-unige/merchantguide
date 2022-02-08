@@ -1,0 +1,4 @@
+pish tegj glob glob is 42
+glob prok Silver is 68
+glob prok Gold is 57800
+glob prok Iron is 782
