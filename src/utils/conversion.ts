@@ -61,7 +61,8 @@ export function inputFromFile(path: string): Notes {
   
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].length === 0) throw new EmptyValueError(`File ${path} is empty`);
-    let words = lines[i].split(' ').filter(item => item.length>0).map(item => item.trim());
+    let words = lines[i].split(' ').filter(item => item.length>0).map(item => item.trim()) // remove empty values and white spaces;
+    
     if (words.length < 3) throw new InvalidSyntaxError(`Line ${i + 1}, input not long enough to be valid`);
     if (words[1] === 'is' && words.length === 3) {
       alienSymbolsMap.set(words[0], words[2]);
@@ -106,12 +107,14 @@ export function produceOutputIntoFile(inputPath: string, outputPath: string) {
   let output = produceOutputFromNotes(inputFromFile(inputPath));
   //fs.truncateSync(outputPath, 1);
   let outputFile = '';
+  
   if (output.translationList && output.translationList.length !== 0) {
     let outputTranslations = output.translationList.map(outputElement => {
       return outputElement[0].join(' ') + ' is ' + outputElement[1];  // translations
     }).join('\n');
     outputFile += outputTranslations;
   }
+  
   if (output.conversionMap && output.conversionMap.length !== 0) {
     if (outputFile !== '') outputFile += '\n';
     let outputConversions = output.conversionMap.map(outputElement => {
@@ -120,14 +123,5 @@ export function produceOutputIntoFile(inputPath: string, outputPath: string) {
     outputFile += outputConversions;
   }
   
-  
-  /*for (const outputElement of output.translationList) {
-    outputFile += outputElement[0].join(' ') + ' is ' + outputElement[1]+ '\r\n';  // translations
-  }
-  
-  for (const outputElement of output.conversionMap) {
-    outputFile += outputElement[1].join(' ') + ' ' + outputElement[0] + ' is ' + outputElement[2] + ' ' + GALACTIC_CURRENCY + '\r\n'; // conversions
-  }
-  outputFile.replace(/\n$/, "");*/
   fs.writeFileSync(outputPath, outputFile, {flag: "w"});
 }

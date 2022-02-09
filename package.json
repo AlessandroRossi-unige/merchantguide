@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "technical challenge for itemis",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",

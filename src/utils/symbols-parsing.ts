@@ -6,12 +6,9 @@ import {SymbolTable} from "../interfaces/SymbolTable";
 import {InvalidSyntaxError} from "../ErrorHandling/InvalidSyntaxError";
 
 export function generateSymbol(label: string, value: number, maxNumberOfRepetitions: number, subtractedAllowedList?: string): Symbol {
-  if (label.length === 0) {
-    throw new EmptyValueError('Label cannot be empty');
-  }
-  if (value < 0) {
-    throw new InvalidValueError('Value cannot be negative');
-  }
+  if (label.length === 0) throw new EmptyValueError('Label cannot be empty');
+  if (value < 0) throw new InvalidValueError('Value cannot be negative');
+  
   return new Symbol(label, value, maxNumberOfRepetitions, subtractedAllowedList);
 }
 
@@ -48,17 +45,19 @@ export function inputParser(valueToParse: string, validSymbols: SymbolTable<Symb
     let symbol = validSymbols[letters[i]];
     
     if (!symbol) throw new InvalidValueError(`Symbol: '${letters[i]}' at index ${i} is not recognised`);
-    if (i - 2 >= 0 && symbol.value > parsedInput[i - 1].value && symbol.value > parsedInput[i - 2].value) throw new InvalidSyntaxError(`Symbol '${parsedInput[i - 2].label}' at index ${i - 2} cannot subtract twice`);
+    if (i - 2 >= 0 && symbol.value > parsedInput[i - 1].value && symbol.value > parsedInput[i - 2].value)
+      throw new InvalidSyntaxError(`Symbol '${parsedInput[i - 2].label}' at index ${i - 2} cannot subtract twice`);
     
     if (i - 1 >= 0 && parsedInput[i - 1].label === symbol.label) {
       numberOfRepetitions++;
     } else {
       numberOfRepetitions = 1;
     }
+    
     if (numberOfRepetitions > symbol.maxNumberOfRepetitions) throw new InvalidSyntaxError(`Symbol '${symbol.label}' at index ${i} cannot be repeated ${numberOfRepetitions} times`);
+    
     if (i - 1 >= 0 && symbol.subtractedAllowed !== undefined && parsedInput[i - 1].value < symbol.value
       && parsedInput[i - 1].label !== symbol.subtractedAllowed) throw new InvalidSyntaxError(`Symbol '${parsedInput[i - 1].label}' cannot be subtracted from '${symbol.label}'`);
-    /*if (i-1 >=0  && i-2 >=0 && symbol.value)*/
     parsedInput.push(symbol);
   }
   
