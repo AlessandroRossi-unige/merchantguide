@@ -177,17 +177,33 @@ describe('InputFromFile test suite', () => {
 describe('produceOutput test suite', () => {
   test('Valid full input', () => {
     let ipath = 'src/tests/testfiles/passing/fullValidInput.txt';
-    let opath = 'src/tests/testOutput/pippo.txt';
+    let opath = 'src/tests/testOutput/output.txt';
     produceOutputIntoFile(ipath, opath);
     let output: string = fs.readFileSync(opath).toString();
     expect(output).toEqual('pish tegj glob glob is 42\nglob prok Silver is 68 Credits\nglob prok Gold is 57800 Credits\nglob prok Iron is 782 Credits');
   });
   
   test('Valid only translations', () => {
-    let ipath = 'src/tests/testfiles/passing/translationValidInput.txt';
-    let opath = 'src/tests/testOutput/pippo.txt';
+    let ipath = 'src/tests/testfiles/passing/onlyTranslation.txt';
+    let opath = 'src/tests/testOutput/output.txt';
     produceOutputIntoFile(ipath, opath);
     let output: string = fs.readFileSync(opath).toString();
-    expect(output).toEqual('pish tegj glob glob is 42\nglob prok Silver is 68 Credits\nglob prok Gold is 57800 Credits\nglob prok Iron is 782 Credits');
+    expect(output).toEqual('pish pish pish glob pish is 39');
+  });
+  
+  test('Valid only conversions', () => {
+    let ipath = 'src/tests/testfiles/passing/onlyConversion.txt';
+    let opath = 'src/tests/testOutput/output.txt';
+    produceOutputIntoFile(ipath, opath);
+    let output: string = fs.readFileSync(opath).toString();
+    expect(output).toEqual('glob prok Gold is 57800 Credits');
+  });
+  
+  test('Valid no questions', () => {
+    let ipath = 'src/tests/testfiles/passing/noQuestions.txt';
+    let opath = 'src/tests/testOutput/output.txt';
+    produceOutputIntoFile(ipath, opath);
+    let output: string = fs.readFileSync(opath).toString();
+    expect(output).toEqual('');
   });
 })

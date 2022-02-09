@@ -106,13 +106,14 @@ export function produceOutputIntoFile(inputPath: string, outputPath: string) {
   let output = produceOutputFromNotes(inputFromFile(inputPath));
   //fs.truncateSync(outputPath, 1);
   let outputFile = '';
-  if (output.translationList) {
+  if (output.translationList && output.translationList.length !== 0) {
     let outputTranslations = output.translationList.map(outputElement => {
       return outputElement[0].join(' ') + ' is ' + outputElement[1];  // translations
     }).join('\n');
-    outputFile += outputTranslations + '\n';
+    outputFile += outputTranslations;
   }
-  if (output.conversionMap) {
+  if (output.conversionMap && output.conversionMap.length !== 0) {
+    if (outputFile !== '') outputFile += '\n';
     let outputConversions = output.conversionMap.map(outputElement => {
       return outputElement[1].join(' ') + ' ' + outputElement[0] + ' is ' + outputElement[2] + ' ' + GALACTIC_CURRENCY; // conversions
     }).join('\n');
