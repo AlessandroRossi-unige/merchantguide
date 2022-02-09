@@ -61,7 +61,7 @@ export function inputFromFile(path: string): Notes {
   
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].length === 0) throw new EmptyValueError(`File ${path} is empty`);
-    let words = lines[i].split(' ');
+    let words = lines[i].split(' ').filter(item => item.length>0).map(item => item.trim());
     if (words.length < 3) throw new InvalidSyntaxError(`Line ${i + 1}, input not long enough to be valid`);
     if (words[1] === 'is' && words.length === 3) {
       alienSymbolsMap.set(words[0], words[2]);

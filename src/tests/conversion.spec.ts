@@ -206,4 +206,12 @@ describe('produceOutput test suite', () => {
     let output: string = fs.readFileSync(opath).toString();
     expect(output).toEqual('');
   });
+  
+  test('Extra spaces, throws error', () => {
+    let ipath = 'src/tests/testfiles/failing/extraSpaces.txt';
+    let opath = 'src/tests/testOutput/output.txt';
+    produceOutputIntoFile(ipath, opath);
+    let output: string = fs.readFileSync(opath).toString();
+    expect(output).toEqual('pish tegj glob glob is 42\nglob prok Silver is 68 Credits\nglob prok Gold is 57800 Credits\nglob prok Iron is 782 Credits');
+  });
 })
